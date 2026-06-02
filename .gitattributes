@@ -1,0 +1,34 @@
+# Standard: alle Textdateien mit LF normalisieren (auch beim Checkout auf Windows)
+* text=auto eol=lf
+
+# Explizit Text, immer LF
+*.py     text eol=lf
+*.ts     text eol=lf
+*.tsx    text eol=lf
+*.js     text eol=lf
+*.jsx    text eol=lf
+*.json   text eol=lf
+*.toml   text eol=lf
+*.md     text eol=lf
+*.yml    text eol=lf
+*.yaml   text eol=lf
+*.ini    text eol=lf
+*.cfg    text eol=lf
+*.sh     text eol=lf
+
+# Windows-Skripte brauchen CRLF
+*.bat    text eol=crlf
+*.cmd    text eol=crlf
+
+# Binärdateien – nicht anfassen
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.gif    binary
+*.ico    binary
+*.webp   binary
+*.pdf    binary
+*.ttf    binary
+*.otf    binary
+*.woff   binary
+*.woff2  binary
