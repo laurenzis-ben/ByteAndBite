@@ -1,1 +1,44 @@
+# ── Secrets / Environment ────────────────────────────────────────────────────
 .env
+.env.*
+!.env.example
+
+# ── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# ── Virtuelle Umgebungen ─────────────────────────────────────────────────────
+.venv/
+venv/
+env/
+
+# ── Test / Coverage / Type-Checking ──────────────────────────────────────────
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# ── Daten & generierte Artefakte ─────────────────────────────────────────────
+# Großer Kaggle-Datensatz – wird per Pipeline geladen, nicht versioniert
+recipes.json
+# Generierte Pipeline-Ausgaben (JSON-Export der verarbeiteten Rezepte)
+output/
+
+# ── IDE / Editor ─────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ── Betriebssystem ───────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
