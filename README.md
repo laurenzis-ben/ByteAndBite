@@ -21,7 +21,7 @@ byteandbite/
 **Konvention:** `apps/` = eigenständig deploybare Anwendungen, `packages/` = geteilter
 Code. Jede App verwaltet ihre Dependencies selbst (`pyproject.toml` bzw. `package.json`).
 
-## Quickstart
+## Quickstart:
 
 ### Backend (`apps/backend`)
 ```bash
