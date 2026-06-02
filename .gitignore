@@ -33,6 +33,24 @@ recipes.json
 # Generierte Pipeline-Ausgaben (JSON-Export der verarbeiteten Rezepte)
 output/
 
+# ── Node / Frontend (Expo / React Native) ───────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+# Expo
+.expo/
+.expo-shared/
+dist/
+web-build/
+# Native Builds
+*.apk
+*.aab
+*.ipa
+# Metro Bundler
+.metro-health-check*
+
 # ── IDE / Editor ─────────────────────────────────────────────────────────────
 .idea/
 .vscode/
