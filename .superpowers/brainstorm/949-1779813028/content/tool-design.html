@@ -1,0 +1,80 @@
+<h2>Tool-Design: Unified Search + Detail (5 Tools)</h2>
+<p class="subtitle">Ansatz B · async Python · AutoGen-kompatibel · PostgreSQL + Embedding-Suche</p>
+
+<div class="section">
+  <span class="label">Tool 1 — Kernsuche</span>
+  <div class="mockup">
+    <div class="mockup-header">search_recipes(...) → list[RecipeSummary]</div>
+    <div class="mockup-body" style="font-size:0.85em;line-height:1.8">
+      <strong>Parameter (alle optional kombinierbar):</strong>
+      <table style="width:100%;border-collapse:collapse;margin-top:8px">
+        <tr style="background:rgba(0,0,0,0.1)"><th style="text-align:left;padding:4px 8px">Name</th><th style="text-align:left;padding:4px 8px">Typ</th><th style="text-align:left;padding:4px 8px">Funktion</th></tr>
+        <tr><td style="padding:4px 8px"><code>query</code></td><td style="padding:4px 8px"><code>str | None</code></td><td style="padding:4px 8px">Freitext → Embedding-Suche (z.B. "etwas Wärmendes")</td></tr>
+        <tr style="background:rgba(0,0,0,0.05)"><td style="padding:4px 8px"><code>meal_type</code></td><td style="padding:4px 8px"><code>str | None</code></td><td style="padding:4px 8px">Frühstück · Mittagessen · Abendessen · Snack · Dessert</td></tr>
+        <tr><td style="padding:4px 8px"><code>season</code></td><td style="padding:4px 8px"><code>str | None</code></td><td style="padding:4px 8px">Frühling · Sommer · Herbst · Winter · ganzjährig</td></tr>
+        <tr style="background:rgba(0,0,0,0.05)"><td style="padding:4px 8px"><code>max_difficulty</code></td><td style="padding:4px 8px"><code>int | None</code></td><td style="padding:4px 8px">1–5, filtert recipes.difficulty ≤ Wert</td></tr>
+        <tr><td style="padding:4px 8px"><code>max_time_min</code></td><td style="padding:4px 8px"><code>int | None</code></td><td style="padding:4px 8px">prep_time_min + cook_time_min ≤ Wert</td></tr>
+        <tr style="background:rgba(0,0,0,0.05)"><td style="padding:4px 8px"><code>max_calories</code></td><td style="padding:4px 8px"><code>float | None</code></td><td style="padding:4px 8px">JOIN recipe_nutrition, calories_kcal ≤ Wert</td></tr>
+        <tr><td style="padding:4px 8px"><code>allergen_tags</code></td><td style="padding:4px 8px"><code>list[str] | None</code></td><td style="padding:4px 8px">Muss-Tags: ["vegan","glutenfrei"] → JOIN recipe_tags</td></tr>
+        <tr style="background:rgba(0,0,0,0.05)"><td style="padding:4px 8px"><code>ingredient_names</code></td><td style="padding:4px 8px"><code>list[str] | None</code></td><td style="padding:4px 8px">Rezepte die mind. diese Zutaten enthalten</td></tr>
+        <tr><td style="padding:4px 8px"><code>limit</code></td><td style="padding:4px 8px"><code>int</code></td><td style="padding:4px 8px">Max. Ergebnisse (default 10)</td></tr>
+      </table>
+      <p style="margin-top:10px"><strong>Rückgabe:</strong> <code>list[RecipeSummary]</code> — id, name, description, meal_type, season, difficulty, total_time_min, cost_tier, allergen_tags, calories_kcal</p>
+      <p style="margin-top:4px;color:#6366f1"><strong>Logik:</strong> Hat query → Embedding generieren → Kosinus-Ähnlichkeit auf recipe.description; dann SQL-Filter obendrauf. Kein query → reiner SQL-Filter.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <span class="label">Tool 2 — Volldetail</span>
+  <div class="mockup">
+    <div class="mockup-header">get_recipe_detail(recipe_id: str) → RecipeDetail</div>
+    <div class="mockup-body" style="font-size:0.85em;line-height:1.8">
+      <p>Lädt ein vollständiges Rezept inkl. aller Joins in einem Query.</p>
+      <p><strong>Rückgabe:</strong> Alle Felder aus <code>recipes</code> + <code>recipe_instructions</code> (geordnete Schritte) + <code>recipe_ingredients</code> mit Zutatennamen + <code>recipe_nutrition</code> + <code>recipe_tags</code></p>
+      <p style="color:#6366f1"><strong>Typischer Agent-Flow:</strong> search_recipes() → IDs → get_recipe_detail(id) für das ausgewählte Rezept</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <span class="label">Tool 3 — Zufallsempfehlung</span>
+  <div class="mockup">
+    <div class="mockup-header">get_recipe_suggestions(count?: int, meal_type?: str, season?: str) → list[RecipeSummary]</div>
+    <div class="mockup-body" style="font-size:0.85em;line-height:1.8">
+      <p>Zieht <code>count</code> zufällige Rezepte (default: 3), optional nach Mahlzeit-Typ und Jahreszeit gefiltert.</p>
+      <p style="color:#6366f1"><strong>Use Case:</strong> "Was soll ich heute Abend kochen?" ohne konkrete Vorgaben — der Agent ruft dies auf wenn der Nutzer keine spezifischen Wünsche hat.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <span class="label">Tool 4 — Semantisch ähnliche Rezepte</span>
+  <div class="mockup">
+    <div class="mockup-header">find_similar_recipes(recipe_id: str, limit?: int) → list[RecipeSummary]</div>
+    <div class="mockup-body" style="font-size:0.85em;line-height:1.8">
+      <p>Findet Rezepte die einem bekannten Rezept semantisch ähnlich sind (über Description-Embedding).</p>
+      <p style="color:#6366f1"><strong>Use Case:</strong> "Zeig mir mehr wie das" oder "Varianten von Rezept X"</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <span class="label">Tool 5 — Zutatenliste</span>
+  <div class="mockup">
+    <div class="mockup-header">list_ingredients(recipe_id: str) → list[IngredientEntry]</div>
+    <div class="mockup-body" style="font-size:0.85em;line-height:1.8">
+      <p>Gibt nur die Zutatenliste zurück (name, amount, unit, preparation) — ohne Schritte/Nährwerte.</p>
+      <p style="color:#6366f1"><strong>Warum separat:</strong> Vorratsschrank-Abgleich braucht keine Schritte, und das Tool bleibt schlank für zukünftige Erweiterungen (z.B. Einkaufsliste).</p>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="background:rgba(99,102,241,0.08);border-radius:8px;padding:16px">
+  <span class="label">Datenstruktur</span>
+  <p style="font-size:0.85em;line-height:1.7;margin-top:8px">
+    <strong>RecipeSummary</strong> (Listenansicht): id, name, description, meal_type, season, difficulty, total_time_min, cost_tier, allergen_tags, calories_kcal<br>
+    <strong>RecipeDetail</strong> (Vollansicht): alle Summary-Felder + instructions (Liste), ingredients (Liste mit Mengen), nutrition (alle Nährwerte)<br>
+    <strong>IngredientEntry</strong>: name, amount, unit, preparation
+  </p>
+</div>

@@ -1,0 +1,129 @@
+{
+  "id": "da4c798f-da64-4017-8c29-9c3a797ccf53",
+  "name": "Spaghetti Siracusani",
+  "source_url": "https://www.chefkoch.de/rezepte/318661113606205/",
+  "source": "dataset",
+  "description": "Spaghetti Siracusani ist ein mediterranes Gericht, das aus einem knusprigen Mürbeteigboden, einer aromatischen Füllung aus grünen Bohnen, Cocktailtomaten und Zwiebeln sowie einem würzigen Guss aus Sahne, Eiern und Schmelzkäse besteht. Es ist ideal als sommerliche Hauptspeise geeignet.",
+  "instructions_normalized": "1. Mehl, Butter, Ei und etwas Salz und Pfeffer zu einem Mürbeteig kneten. 2. Den Teig in einer 26er Form auslegen und einen ca. 3 cm hohen Rand formen. 3. Den Teigboden mehrmals mit einer Gabel einstechen. 4. Teig bei 200 Grad ca. 10 Minuten vorbacken. 5. Bohnen 12 Minuten in Salzwasser kochen. 6. Tomaten waschen und vierteln. 7. Zwiebeln häuten und in feine Ringe schneiden. 8. Öl in einer Pfanne erhitzen und das Gemüse darin ca. 5 Minuten braten. 9. Gemüse auf dem vorgebackenen Teig verteilen. 10. Sahne mit Eiern, Schmelzkäse, Salz, Pfeffer, Bohnenkraut und Muskat vermischen. 11. Guss über das Gemüse geben. 12. Bei 180 Grad weitere 25 Minuten backen.",
+  "servings": 4,
+  "prep_time_min": 30,
+  "cook_time_min": 35,
+  "ingredients": [
+    {
+      "name": "Weizenmehl",
+      "amount": 200.0,
+      "unit": "g",
+      "preparation": null,
+      "english_name": "wheat flour"
+    },
+    {
+      "name": "Butter",
+      "amount": 100.0,
+      "unit": "g",
+      "preparation": null,
+      "english_name": "butter"
+    },
+    {
+      "name": "Ei",
+      "amount": 1.0,
+      "unit": "Stück",
+      "preparation": null,
+      "english_name": "egg"
+    },
+    {
+      "name": "Salz",
+      "amount": null,
+      "unit": null,
+      "preparation": null,
+      "english_name": "salt"
+    },
+    {
+      "name": "Pfeffer",
+      "amount": null,
+      "unit": null,
+      "preparation": null,
+      "english_name": "pepper"
+    },
+    {
+      "name": "grüne Bohnen",
+      "amount": 400.0,
+      "unit": "g",
+      "preparation": null,
+      "english_name": "green beans"
+    },
+    {
+      "name": "Cocktailtomaten",
+      "amount": 150.0,
+      "unit": "g",
+      "preparation": null,
+      "english_name": "cherry tomatoes"
+    },
+    {
+      "name": "Zwiebeln",
+      "amount": 2.0,
+      "unit": "Stück",
+      "preparation": null,
+      "english_name": "onions"
+    },
+    {
+      "name": "Öl",
+      "amount": null,
+      "unit": null,
+      "preparation": null,
+      "english_name": "oil"
+    },
+    {
+      "name": "Sahne",
+      "amount": 125.0,
+      "unit": "ml",
+      "preparation": null,
+      "english_name": "cream"
+    },
+    {
+      "name": "Ei",
+      "amount": 2.0,
+      "unit": "Stück",
+      "preparation": null,
+      "english_name": "egg"
+    },
+    {
+      "name": "Schmelzkäse",
+      "amount": 100.0,
+      "unit": "g",
+      "preparation": null,
+      "english_name": "processed cheese"
+    },
+    {
+      "name": "Bohnenkraut",
+      "amount": null,
+      "unit": null,
+      "preparation": null,
+      "english_name": "savory"
+    },
+    {
+      "name": "Muskat",
+      "amount": null,
+      "unit": null,
+      "preparation": null,
+      "english_name": "nutmeg"
+    }
+  ],
+  "nutrition_per_serving": {
+    "calories_kcal": 1146.25,
+    "protein_g": 23.31,
+    "carbs_g": 99.15,
+    "fat_g": 79.22,
+    "fiber_g": 29.5,
+    "sodium_mg": 10153.0,
+    "iron_mg": 20.82,
+    "calcium_mg": 989.75,
+    "vitamin_c_mg": 40.25,
+    "estimated": true
+  },
+  "difficulty": 2,
+  "allergen_tags": [],
+  "meal_type": "Abendessen",
+  "season": "Sommer",
+  "cost_tier": "mittel",
+  "processed_at": "2026-05-05T19:05:50.403860"
+}

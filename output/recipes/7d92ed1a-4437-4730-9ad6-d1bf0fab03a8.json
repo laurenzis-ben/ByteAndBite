@@ -1,0 +1,96 @@
+{
+  "id": "7d92ed1a-4437-4730-9ad6-d1bf0fab03a8",
+  "name": "Kaninchen a la Gioff",
+  "source_url": "https://www.chefkoch.de/rezepte/46341015661368/",
+  "source": "dataset",
+  "description": "Dieses cremige Dessert kombiniert den Geschmack von Vanillepudding und Weichweizengrieß mit einem fruchtigen Kirschkompott. Es eignet sich besonders gut als süßes Highlight nach einem festlichen Essen.",
+  "instructions_normalized": "1. Kirschen abtropfen lassen und den Saft auffangen. 2. Puddingpulver mit Vanillezucker mischen und mit 6 EL Kirschsaft glatt rühren. 3. Übrigen Kirschsaft aufkochen und vom Herd nehmen. 4. Angerührtes Puddingpulver einrühren und 1 Minute unter Rühren köcheln lassen. 5. Kirschen unter den angedickten Saft geben. 6. Milch, 40 g Zucker, Vanillemark und Butter aufkochen. 7. Topf vom Herd ziehen und Grieß unter Rühren einstreuen. 8. Unter Rühren aufkochen und 5 Minuten zugedeckt quellen lassen. 9. Ei trennen; Eiweiß mit einer Prise Salz steif schlagen und dabei 20 g Zucker einrieseln lassen. 10. Eigelb unter den Brei rühren. 11. Eischnee vorsichtig unterheben. 12. Grießbrei mit dem Kirschkompott servieren.",
+  "servings": 4,
+  "prep_time_min": 15,
+  "cook_time_min": 10,
+  "ingredients": [
+    {
+      "name": "Kirschen",
+      "amount": 200.0,
+      "unit": "g",
+      "preparation": "abgetropft",
+      "english_name": "cherries"
+    },
+    {
+      "name": "Vanillepuddingpulver",
+      "amount": 1.0,
+      "unit": "Pck.",
+      "preparation": null,
+      "english_name": "vanilla pudding powder"
+    },
+    {
+      "name": "Vanillezucker",
+      "amount": 1.0,
+      "unit": "Pck.",
+      "preparation": null,
+      "english_name": "vanilla sugar"
+    },
+    {
+      "name": "Milch",
+      "amount": 750.0,
+      "unit": "ml",
+      "preparation": null,
+      "english_name": "milk"
+    },
+    {
+      "name": "Zucker",
+      "amount": 60.0,
+      "unit": "g",
+      "preparation": null,
+      "english_name": "sugar"
+    },
+    {
+      "name": "Vanilleschote",
+      "amount": 1.0,
+      "unit": "Stück",
+      "preparation": "das Mark",
+      "english_name": "vanilla pod"
+    },
+    {
+      "name": "Butter",
+      "amount": 30.0,
+      "unit": "g",
+      "preparation": null,
+      "english_name": "butter"
+    },
+    {
+      "name": "Weichweizengrieß",
+      "amount": 80.0,
+      "unit": "g",
+      "preparation": null,
+      "english_name": "semolina"
+    },
+    {
+      "name": "Ei",
+      "amount": 1.0,
+      "unit": "Stück",
+      "preparation": "getrennt",
+      "english_name": "egg"
+    }
+  ],
+  "nutrition_per_serving": {
+    "calories_kcal": 426.25,
+    "protein_g": 10.2,
+    "carbs_g": 70.8,
+    "fat_g": 12.28,
+    "fiber_g": 1.38,
+    "sodium_mg": 159.68,
+    "iron_mg": 0.57,
+    "calcium_mg": 245.75,
+    "vitamin_c_mg": 2.5,
+    "estimated": true
+  },
+  "difficulty": 3,
+  "allergen_tags": [
+    "nussfrei"
+  ],
+  "meal_type": "Dessert",
+  "season": "ganzjährig",
+  "cost_tier": "mittel",
+  "processed_at": "2026-05-05T17:37:41.431452"
+}

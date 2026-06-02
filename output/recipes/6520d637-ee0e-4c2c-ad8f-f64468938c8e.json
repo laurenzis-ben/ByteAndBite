@@ -1,0 +1,101 @@
+{
+  "id": "6520d637-ee0e-4c2c-ad8f-f64468938c8e",
+  "name": "Gnocchi - Hack - Pfanne mit Basilikum",
+  "source_url": "https://www.chefkoch.de/rezepte/1555771262860408/",
+  "source": "dataset",
+  "description": "Dieses Rezept kombiniert herzhafte Gnocchi mit Hackfleisch in einer aromatischen Pfanne mit frischem Basilikum. Ein einfaches und köstliches Gericht für jeden Abend.",
+  "instructions_normalized": "1. Kohlrabi schälen und klein würfeln. 2. Gemüsebrühe und Milch in einem Topf aufkochen. 3. Kohlrabi hinzufügen und zugedeckt kochen, bis er gar, aber noch bissfest ist. 4. Währenddessen die Nudeln in reichlich Salzwasser bissfest kochen. 5. Kochschinken in kurze Streifen schneiden. 6. Petersilie waschen, trocken tupfen und fein hacken. 7. Frischkäse, Kochschinken und Petersilie unter die Kohlrabi-Mischung rühren. 8. Sauce mit Salz und Pfeffer abschmecken. 9. Bei Bedarf mit hellem Saucenbinder binden. 10. Sauce mit den abgetropften Nudeln anrichten. 11. Mit grünem Salat servieren.",
+  "servings": 4,
+  "prep_time_min": 20,
+  "cook_time_min": 20,
+  "ingredients": [
+    {
+      "name": "Kohlrabi",
+      "amount": 250.0,
+      "unit": "g",
+      "preparation": "geschält und klein gewürfelt",
+      "english_name": "kohlrabi"
+    },
+    {
+      "name": "Gemüsebrühe",
+      "amount": 150.0,
+      "unit": "ml",
+      "preparation": null,
+      "english_name": "vegetable broth"
+    },
+    {
+      "name": "Milch",
+      "amount": 150.0,
+      "unit": "ml",
+      "preparation": null,
+      "english_name": "milk"
+    },
+    {
+      "name": "Farfalle oder Kelche",
+      "amount": 250.0,
+      "unit": "g",
+      "preparation": null,
+      "english_name": "pasta"
+    },
+    {
+      "name": "Kochschinken",
+      "amount": 100.0,
+      "unit": "g",
+      "preparation": "in kurze Streifen geschnitten",
+      "english_name": "ham"
+    },
+    {
+      "name": "Frischkäse",
+      "amount": 100.0,
+      "unit": "g",
+      "preparation": "evtl. mit Kräutern",
+      "english_name": "cream cheese"
+    },
+    {
+      "name": "Salz",
+      "amount": null,
+      "unit": null,
+      "preparation": null,
+      "english_name": "salt"
+    },
+    {
+      "name": "Pfeffer",
+      "amount": null,
+      "unit": null,
+      "preparation": null,
+      "english_name": "pepper"
+    },
+    {
+      "name": "Petersilie",
+      "amount": null,
+      "unit": "Stiele",
+      "preparation": "gewaschen, trocken getupft und fein gehackt",
+      "english_name": "parsley"
+    },
+    {
+      "name": "Saucenbinder, hell",
+      "amount": null,
+      "unit": null,
+      "preparation": "optional",
+      "english_name": "light sauce thickener"
+    }
+  ],
+  "nutrition_per_serving": {
+    "calories_kcal": 398.0,
+    "protein_g": 15.12,
+    "carbs_g": 62.39,
+    "fat_g": 11.89,
+    "fiber_g": 9.2,
+    "sodium_mg": 10349.25,
+    "iron_mg": 5.69,
+    "calcium_mg": 236.0,
+    "vitamin_c_mg": 67.5,
+    "estimated": true
+  },
+  "difficulty": 2,
+  "allergen_tags": [],
+  "meal_type": "Mittagessen",
+  "season": "ganzjährig",
+  "cost_tier": "mittel",
+  "processed_at": "2026-05-05T17:37:41.485931"
+}

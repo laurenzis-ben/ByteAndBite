@@ -1,0 +1,136 @@
+{
+  "id": "3734d212-733b-4bc5-a37c-f51d12ca73c6",
+  "name": "Gebratener Hasenrücken",
+  "source_url": "https://www.chefkoch.de/rezepte/185441079701305/",
+  "source": "dataset",
+  "description": "Ein würziges und reichhaltiges Gericht aus Hackfleisch, Sauerkraut, Wurst und Reis, das mit Speck und Schmand im Ofen gebacken wird. Es bietet eine herzhafte Kombination von Aromen und ist besonders in der kalten Jahreszeit ein echter Genuss.",
+  "instructions_normalized": "1. Eier hart kochen, pellen und in Scheiben schneiden. 2. Reis halbgar kochen und zur Seite stellen. 3. Wurst in dünne Scheiben schneiden. 4. Knoblauch abziehen und fein würfeln. 5. Zwiebel schälen, fein hacken und in etwas Fett glasig braten. 6. Knoblauch und Hackfleisch dazugeben und braten, bis das Hackfleisch krümelig wird. 7. Fleischmasse mit Salz, Pfeffer und Paprikapulver würzen. 8. Sauerkraut durchspülen, ausdrücken und abtropfen lassen. 9. Sauerkraut mit Kümmel und Lorbeerblättern mischen und ca. 30 Minuten bei niedriger Hitze dünsten. 10. Eine feuerfeste Form mit Öl einfetten, Boden dünn mit Sauerkraut belegen. 11. Kolbász und die Hälfte der Eierscheiben darauf verteilen. 12. Eine weitere Sauerkrautschicht darüber legen und mit 1 Becher Schmand bedecken. 13. Hackfleisch mit Reis mischen und gleichmäßig verteilen. 14. Mit restlichen Eierscheiben und dritter Sauerkrautschicht bedecken. 15. Restlichen Schmand auf die letzte Schicht verteilen. 16. Speck in dünne Scheiben schneiden, alles abdecken und mit etwas Öl besprenkeln. 17. Form mit Deckel verschließen und im vorgeheizten Ofen bei 175°C ca. 60 Minuten garen.",
+  "servings": 6,
+  "prep_time_min": null,
+  "cook_time_min": 60,
+  "ingredients": [
+    {
+      "name": "Hackfleisch, halb und halb",
+      "amount": 600.0,
+      "unit": "g",
+      "preparation": null,
+      "english_name": "ground meat, mixed"
+    },
+    {
+      "name": "Sauerkraut",
+      "amount": 800.0,
+      "unit": "g",
+      "preparation": "durchspülen, ausdrücken, abtropfen lassen",
+      "english_name": "sauerkraut"
+    },
+    {
+      "name": "Wurst, geräucherte (Csabai Kolbász)",
+      "amount": 200.0,
+      "unit": "g",
+      "preparation": "in dünne Scheiben schneiden",
+      "english_name": "smoked sausage (Csabai Kolbász)"
+    },
+    {
+      "name": "Speck, durchwachsener, geräucherter",
+      "amount": 150.0,
+      "unit": "g",
+      "preparation": "in dünne Scheiben schneiden",
+      "english_name": "bacon, streaky, smoked"
+    },
+    {
+      "name": "Reis",
+      "amount": 100.0,
+      "unit": "g",
+      "preparation": "halbgar kochen",
+      "english_name": "rice"
+    },
+    {
+      "name": "Zwiebel(n)",
+      "amount": 1.0,
+      "unit": "Stück",
+      "preparation": "fein hacken",
+      "english_name": "onion"
+    },
+    {
+      "name": "Knoblauch",
+      "amount": 1.0,
+      "unit": "Zehe",
+      "preparation": "fein würfeln",
+      "english_name": "garlic"
+    },
+    {
+      "name": "Schmand",
+      "amount": 400.0,
+      "unit": "ml",
+      "preparation": null,
+      "english_name": "sour cream"
+    },
+    {
+      "name": "Kümmel, ganzer",
+      "amount": 0.5,
+      "unit": "TL",
+      "preparation": null,
+      "english_name": "caraway, whole"
+    },
+    {
+      "name": "Lorbeerblätter",
+      "amount": 2.0,
+      "unit": "Stück",
+      "preparation": null,
+      "english_name": "bay leaves"
+    },
+    {
+      "name": "Salz und Pfeffer",
+      "amount": null,
+      "unit": null,
+      "preparation": "zum Würzen",
+      "english_name": "salt and pepper"
+    },
+    {
+      "name": "Ei(er) (bei Bedarf)",
+      "amount": 4.0,
+      "unit": "Stück",
+      "preparation": "hart kochen, in Scheiben schneiden",
+      "english_name": "eggs (optional)"
+    },
+    {
+      "name": "Paprikapulver",
+      "amount": null,
+      "unit": null,
+      "preparation": "zum Würzen",
+      "english_name": "paprika powder"
+    },
+    {
+      "name": "Wasser",
+      "amount": null,
+      "unit": null,
+      "preparation": "nach Bedarf",
+      "english_name": "water"
+    },
+    {
+      "name": "Öl",
+      "amount": null,
+      "unit": null,
+      "preparation": "zum Einfetten und Besprenkeln",
+      "english_name": "oil"
+    }
+  ],
+  "nutrition_per_serving": {
+    "calories_kcal": 960.68,
+    "protein_g": 52.84,
+    "carbs_g": 35.6,
+    "fat_g": 67.01,
+    "fiber_g": 10.17,
+    "sodium_mg": 7363.21,
+    "iron_mg": 9.37,
+    "calcium_mg": 187.0,
+    "vitamin_c_mg": 17.77,
+    "estimated": true
+  },
+  "difficulty": 4,
+  "allergen_tags": [],
+  "meal_type": "Abendessen",
+  "season": "Herbst",
+  "cost_tier": "mittel",
+  "processed_at": "2026-05-05T17:37:44.711222"
+}

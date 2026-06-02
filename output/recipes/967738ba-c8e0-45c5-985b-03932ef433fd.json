@@ -1,0 +1,108 @@
+{
+  "id": "967738ba-c8e0-45c5-985b-03932ef433fd",
+  "name": "Rehrücken in Salzkruste mit Waldpilzgulasch",
+  "source_url": "https://www.chefkoch.de/rezepte/307991111110164/",
+  "source": "dataset",
+  "description": "Ein festliches Gericht, bei dem Hirschsteaks in einer herzhaften Marinade eingelegt und dann gebraten werden. Dazu wird eine fruchtige Sauce aus Ananas und Sauerkirschen serviert. Perfekt für besondere Anlässe.",
+  "instructions_normalized": "1. Öl mit Rotwein, Essig, Wacholderbeeren und Senf mischen. 2. Marinade über die Hirschsteaks gießen und 24 Stunden im Kühlschrank marinieren lassen, dabei öfter wenden. 3. Steaks abtrocknen, Marinade beiseite stellen. 4. Öl in einer großen Pfanne erhitzen. 5. Steaks von jeder Seite 5 - 6 Minuten braten. 6. Nach dem Braten jeder Seite salzen und pfeffern. 7. Hirschsteaks im Backofen warm halten. 8. Ananaswürfel ins Bratfett geben und kurz anbraten. 9. Sauerkirschen zu den Ananaswürfeln geben. 10. Sauerkirschsaft und 1 - 2 Esslöffel Marinade zu den Früchten geben, alles bei schwacher Hitze erwärmen. 11. Fruchtmischung über die Steaks verteilen.",
+  "servings": 4,
+  "prep_time_min": 30,
+  "cook_time_min": 15,
+  "ingredients": [
+    {
+      "name": "Öl",
+      "amount": 3.0,
+      "unit": "EL",
+      "preparation": null,
+      "english_name": "oil"
+    },
+    {
+      "name": "Rotwein",
+      "amount": 5.0,
+      "unit": "EL",
+      "preparation": null,
+      "english_name": "red wine"
+    },
+    {
+      "name": "Apfelessig",
+      "amount": 2.0,
+      "unit": "EL",
+      "preparation": null,
+      "english_name": "apple cider vinegar"
+    },
+    {
+      "name": "Wacholderbeeren",
+      "amount": 3.0,
+      "unit": null,
+      "preparation": null,
+      "english_name": "juniper berries"
+    },
+    {
+      "name": "Senf, mittelscharf",
+      "amount": 1.0,
+      "unit": "TL",
+      "preparation": null,
+      "english_name": "mustard, medium hot"
+    },
+    {
+      "name": "Hirschsteaks, aus der Keule",
+      "amount": 4.0,
+      "unit": "Stück",
+      "preparation": null,
+      "english_name": "venison steaks, leg cut"
+    },
+    {
+      "name": "Öl",
+      "amount": 2.0,
+      "unit": "EL",
+      "preparation": null,
+      "english_name": "oil"
+    },
+    {
+      "name": "Salz und Pfeffer",
+      "amount": null,
+      "unit": null,
+      "preparation": null,
+      "english_name": "salt and pepper"
+    },
+    {
+      "name": "Ananas, gewürfelt",
+      "amount": 100.0,
+      "unit": "g",
+      "preparation": null,
+      "english_name": "pineapple, diced"
+    },
+    {
+      "name": "Sauerkirschen, Glas",
+      "amount": 125.0,
+      "unit": "ml",
+      "preparation": null,
+      "english_name": "sour cherries, jarred"
+    },
+    {
+      "name": "Kirschsaft",
+      "amount": 1.0,
+      "unit": "EL",
+      "preparation": null,
+      "english_name": "cherry juice"
+    }
+  ],
+  "nutrition_per_serving": {
+    "calories_kcal": 364.45,
+    "protein_g": 34.35,
+    "carbs_g": 7.8,
+    "fat_g": 20.25,
+    "fiber_g": 1.3,
+    "sodium_mg": 139.38,
+    "iron_mg": 7.25,
+    "calcium_mg": 21.05,
+    "vitamin_c_mg": 13.4,
+    "estimated": true
+  },
+  "difficulty": 3,
+  "allergen_tags": [],
+  "meal_type": "Abendessen",
+  "season": "Herbst",
+  "cost_tier": "teuer",
+  "processed_at": "2026-05-05T19:05:49.463120"
+}

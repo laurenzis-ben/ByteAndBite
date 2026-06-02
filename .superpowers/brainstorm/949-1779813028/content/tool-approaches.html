@@ -1,0 +1,64 @@
+<h2>Drei Ansätze für die Agent-Tool-Schicht</h2>
+<p class="subtitle">Alle Ansätze sind lesend + semantische Suche · AutoGen-kompatibel · async Python</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Viele kleine Tools</h3>
+      <p><strong>8–9 spezialisierte Tools</strong>, jedes für genau eine Dimension.</p>
+      <ul style="margin-top:8px;padding-left:16px;font-size:0.85em;line-height:1.7">
+        <li><code>search_recipes_by_name(query)</code></li>
+        <li><code>filter_recipes(meal_type, season, difficulty, …)</code></li>
+        <li><code>filter_by_nutrition(max_calories, min_protein, …)</code></li>
+        <li><code>find_by_ingredients(ingredient_names)</code></li>
+        <li><code>search_semantic(query)</code></li>
+        <li><code>get_random_suggestions(count, filters)</code></li>
+        <li><code>get_recipe_detail(id)</code></li>
+        <li><code>get_recipe_nutrition(id)</code></li>
+        <li><code>get_similar_recipes(id)</code></li>
+      </ul>
+      <div class="pros-cons" style="margin-top:10px">
+        <div class="pros"><h4>Pro</h4><ul><li>Jedes Tool maximal einfach</li><li>Gut testbar isoliert</li></ul></div>
+        <div class="cons"><h4>Contra</h4><ul><li>Agent muss viele Calls kombinieren</li><li>Mehr Latenz (mehrere DB-Trips)</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Unified Search + Detail <span style="font-size:0.75em;color:#10b981;font-weight:600">★ Empfehlung</span></h3>
+      <p><strong>5 Tools</strong> — ein mächtiges Such-Tool kombiniert SQL-Filter und semantische Suche, daneben Detail-Tools.</p>
+      <ul style="margin-top:8px;padding-left:16px;font-size:0.85em;line-height:1.7">
+        <li><code>search_recipes(query?, meal_type?, season?, max_difficulty?, max_time_min?, max_calories?, allergen_tags?, ingredients?, limit?)</code></li>
+        <li><code>get_recipe_detail(id)</code> — Schritte + Zutaten + Nährwerte</li>
+        <li><code>get_recipe_suggestions(count?, meal_type?, season?)</code> — zufällig/saisonal</li>
+        <li><code>find_similar_recipes(recipe_id, limit?)</code> — semantisch ähnlich</li>
+        <li><code>list_ingredients(recipe_id)</code> — nur Zutatenliste (Vorratsschrank-ready)</li>
+      </ul>
+      <div class="pros-cons" style="margin-top:10px">
+        <div class="pros"><h4>Pro</h4><ul><li>Agent drückt komplexe Fragen in einem Call aus</li><li>Wenige Roundtrips → schneller</li><li>Natürliche Tool-Namen</li></ul></div>
+        <div class="cons"><h4>Contra</h4><ul><li>search_recipes hat viele optionale Parameter</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Discovery- + Detail-Layer</h3>
+      <p><strong>4 Tools</strong> — expliziter zweistufiger Fluss: erst entdecken, dann vertiefen.</p>
+      <ul style="margin-top:8px;padding-left:16px;font-size:0.85em;line-height:1.7">
+        <li><code>discover_recipes(query, filters)</code> → Kurzliste mit IDs</li>
+        <li><code>get_recipe(id)</code> → vollständiges Rezept</li>
+        <li><code>get_similar(recipe_id)</code> → ähnliche Rezepte</li>
+        <li><code>suggest(context_text)</code> → kontextuelle Empfehlung</li>
+      </ul>
+      <div class="pros-cons" style="margin-top:10px">
+        <div class="pros"><h4>Pro</h4><ul><li>Sehr saubere API-Struktur</li><li>Spiegelt REST-Design wider</li></ul></div>
+        <div class="cons"><h4>Contra</h4><ul><li>Immer mindestens 2 Calls nötig</li><li>Agent-Steuerung komplexer</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>
