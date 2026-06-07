@@ -18,7 +18,7 @@ from typing import Any
 from sqlalchemy import func, select
 from sqlalchemy.orm import selectinload
 
-from db.models import Recipe, RecipeIngredient, RecipeTag
+from db.models import Recipe, RecipeIngredient, RecipeTag, Discount
 from db.session import get_session
 
 # Kontrollierte Vokabulare – spiegeln die Literal-Types aus models/recipe.py.
@@ -41,6 +41,8 @@ async def search_recipes(
 ) -> list[dict[str, Any]]:
     """Sucht Rezepte nach Filterkriterien und gibt eine kompakte Trefferliste zurück.
 
+    Die Rückgabe ist eine Liste mit Dictionaries, die Rezept-Informationen enthalten.
+    Ist diese Liste leer [], sollten die Funktionsargument entsprechend der Zielsetzung angepasst werden.
     Bewusst *keine* vollständigen Rezepte – nur so viel, dass das LLM auswählen kann.
     Für Details ruft der Agent danach get_recipe_details mit der id auf.
     """
@@ -166,6 +168,51 @@ async def get_recipe_details(recipe_id: str) -> dict[str, Any] | None:
     }
 
 
+# ── Tool 3: search_discounts ──────────────────────────────────────────────────────
+async def search_discounts() -> list[str] | None:
+    """Gibt alle Namen von Zutaten aus, die im Angebot stehen.
+
+    Gibt None zurück, wenn keine Angebote vorliegen.
+    """
+    stmt = select(Discount.ingredient).where(Discount.discount.is_not(None))
+
+    async with get_session() as session:
+        result = await session.execute(stmt)
+        discounted_ingredients = result.scalars().all()
+
+    if not discounted_ingredients:
+        return None
+
+    return list(discounted_ingredients)
+
+
+# ── Tool 4: get discount details ──────────────────────────────────────────────────────
+async def get_discount_details(ingredient_name: str) -> dict[str, Any] | None:
+    """Gibt die Details des Angebots einer Zutat aus der Datenbank zurück.
+
+    Gibt None zurück, wenn keine Zutat mit diesem Namen in den Angeboten steht.
+    """
+    # Wir suchen exakt den Eintrag, bei dem die Spalte 'ingredient' dem Suchbegriff entspricht
+    stmt = select(Discount).where(Discount.ingredient == ingredient_name)
+
+    async with get_session() as session:
+        result = await session.execute(stmt)
+        # scalar_one_or_none() ist perfekt hierfür:
+        # Es gibt genau das eine Objekt zurück, oder None, falls es nicht existiert.
+        item = result.scalar_one_or_none()
+
+    # Wenn die Zutat nicht in der Datenbank gefunden wurde
+    if item is None:
+        return None
+
+    # Zutat gefunden: Wir geben Preis und Rabatt als Dictionary zurück
+    return {
+        "ingredient": item.ingredient,  # Packe den Namen ruhig nochmal dazu, das ist oft praktisch
+        "price": item.price,
+        "discount": item.discount
+    }
+
+
 # ── Tool-Schemas (OpenAI Function-Calling-Format) ───────────────────────────────
 # Direkt als `tools=TOOL_SCHEMAS` an client.chat.completions.create() übergebbar.
 
@@ -242,6 +289,41 @@ TOOL_SCHEMAS: list[dict[str, Any]] = [
             },
         },
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "search_discounts",
+            "description": (
+                "Sucht in der Datenbank nach allen aktuell im Angebot befindlichen Zutaten "
+                "und gibt eine Liste ihrer Namen zurück. Nutze dies, um einen Überblick über "
+                "verfügbare Rabatte zu bekommen."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {},
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_discount_details",
+            "description": (
+                "Gibt die exakten Angebotsdetails (Preis und Rabatt) für eine einzelne Zutat zurück. "
+                "Der ingredient_name stammt idealerweise aus einem vorherigen get_search_discounts-Aufruf."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "ingredient_name": {
+                        "type": "string",
+                        "description": "Der genaue Name der Zutat (z. B. 'Tomate'), für die die Angebotsdetails abgerufen werden sollen.",
+                    }
+                },
+                "required": ["ingredient_name"],
+            },
+        },
+    }
 ]
 
 
@@ -250,6 +332,8 @@ TOOL_SCHEMAS: list[dict[str, Any]] = [
 _TOOL_FUNCTIONS = {
     "search_recipes": search_recipes,
     "get_recipe_details": get_recipe_details,
+    "search_discounts": search_discounts,
+    "get_discount_details": get_discount_details,
 }
 
 

@@ -13,6 +13,8 @@ from __future__ import annotations
 from datetime import datetime
 from uuid import uuid4
 
+from typing import Optional
+
 from sqlalchemy import (
     Boolean,
     DateTime,
@@ -154,3 +156,14 @@ class RecipeTag(Base):
     tag: Mapped[str] = mapped_column(String(100), nullable=False)
 
     recipe: Mapped[Recipe] = relationship(back_populates="tags")
+
+
+# ── Discounts ───────────────────────────────────────────────────────────────────────
+class Discount(Base):
+    __tablename__ = "discounts"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+
+    ingredient: Mapped[str] = mapped_column(String, nullable=False)
+    price: Mapped[float] = mapped_column(Float, nullable=False)
+    discount: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
