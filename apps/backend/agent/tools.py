@@ -15,10 +15,10 @@ from __future__ import annotations
 
 from typing import Any
 
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import selectinload
 
-from db.models import Recipe, RecipeIngredient, RecipeTag
+from db.models import Ingredient, Recipe, RecipeIngredient, RecipeNutrition, RecipeTag
 from db.session import get_session
 
 # Kontrollierte Vokabulare – spiegeln die Literal-Types aus models/recipe.py.
@@ -26,6 +26,23 @@ from db.session import get_session
 _MEAL_TYPES = ["Frühstück", "Mittagessen", "Abendessen", "Snack", "Dessert"]
 _COST_TIERS = ["günstig", "mittel", "teuer"]
 _TAGS = ["glutenfrei", "laktosefrei", "nussfrei", "vegan", "vegetarisch", "ei-frei"]
+
+
+def _summary(recipe: Recipe) -> dict[str, Any]:
+    """Kompakte Rezept-Felder für Trefferlisten (gemeinsames Format der Such-Tools).
+
+    Setzt voraus, dass recipe.tags geladen ist (selectinload).
+    """
+    return {
+        "id": recipe.id,
+        "name": recipe.name,
+        "description": recipe.description,
+        "meal_type": recipe.meal_type,
+        "difficulty": recipe.difficulty,
+        "total_time_min": (recipe.prep_time_min or 0) + (recipe.cook_time_min or 0),
+        "cost_tier": recipe.cost_tier,
+        "tags": [t.tag for t in recipe.tags],
+    }
 
 
 # ── Tool 1: search_recipes ──────────────────────────────────────────────────────
@@ -166,6 +183,143 @@ async def get_recipe_details(recipe_id: str) -> dict[str, Any] | None:
     }
 
 
+# ── Tool 3: find_recipes_by_ingredients ─────────────────────────────────────────
+
+async def find_recipes_by_ingredients(
+    ingredients: list[str],
+    meal_type: str | None = None,
+    limit: int = 10,
+) -> list[dict[str, Any]]:
+    """Findet Rezepte, die möglichst viele der angegebenen Vorrats-Zutaten nutzen.
+
+    Jede Vorrats-Zutat wird per Substring (case-insensitive) gegen die Rezept-
+    Zutaten gematcht ('Ei' trifft 'Eier'). Ergebnis ist absteigend nach Anzahl
+    getroffener Vorrats-Zutaten sortiert; Rezepte ohne Treffer entfallen.
+
+    Pro Rezept zusätzlich: matched_ingredients (getroffene Vorrats-Zutaten),
+    match_count, total_ingredients und missing_ingredients ('dir fehlt noch …').
+    """
+    if not ingredients:
+        return []
+
+    # Kandidaten: Rezepte mit mindestens einer passenden Zutat (EXISTS-Subquery).
+    match_any = or_(*[Ingredient.name.ilike(f"%{term}%") for term in ingredients])
+    stmt = (
+        select(Recipe)
+        .where(
+            select(RecipeIngredient.id)
+            .join(Ingredient, RecipeIngredient.ingredient_id == Ingredient.id)
+            .where(RecipeIngredient.recipe_id == Recipe.id, match_any)
+            .exists()
+        )
+        .options(
+            selectinload(Recipe.tags),
+            selectinload(Recipe.recipe_ingredients).selectinload(
+                RecipeIngredient.ingredient
+            ),
+        )
+    )
+    if meal_type:
+        stmt = stmt.where(Recipe.meal_type == meal_type)
+
+    async with get_session() as session:
+        result = await session.execute(stmt)
+        recipes = result.scalars().unique().all()
+
+    lowered = [(term, term.lower()) for term in ingredients]
+    out: list[dict[str, Any]] = []
+    for r in recipes:
+        recipe_ing_names = [ri.ingredient.name for ri in r.recipe_ingredients]
+
+        # Welche Vorrats-Begriffe kommen im Rezept vor?
+        matched_terms = [
+            term
+            for term, low in lowered
+            if any(low in name.lower() for name in recipe_ing_names)
+        ]
+        if not matched_terms:
+            continue
+
+        # Rezept-Zutaten, die durch keinen Vorrats-Begriff abgedeckt sind.
+        missing = [
+            name
+            for name in recipe_ing_names
+            if not any(low in name.lower() for _, low in lowered)
+        ]
+
+        summary = _summary(r)
+        summary.update(
+            matched_ingredients=matched_terms,
+            match_count=len(matched_terms),
+            total_ingredients=len(recipe_ing_names),
+            missing_ingredients=missing,
+        )
+        out.append(summary)
+
+    out.sort(key=lambda d: d["match_count"], reverse=True)
+    return out[:limit]
+
+
+# ── Tool 4: filter_by_nutrition ─────────────────────────────────────────────────
+
+async def filter_by_nutrition(
+    min_protein_g: float | None = None,
+    max_calories_kcal: float | None = None,
+    min_calories_kcal: float | None = None,
+    max_carbs_g: float | None = None,
+    max_fat_g: float | None = None,
+    min_fiber_g: float | None = None,
+    meal_type: str | None = None,
+    limit: int = 10,
+) -> list[dict[str, Any]]:
+    """Sucht Rezepte nach Nährwert-Grenzen pro Portion (Kalorien + Makronährstoffe).
+
+    Grenzwerte sind inklusiv. Rezepte ohne Nährwert-Datensatz entfallen (Inner Join):
+    ein fehlender Wert kann eine Grenze nicht erfüllen. Gibt kompakte Treffer inkl.
+    nutrition_per_serving zurück, damit der Agent direkt vergleichen kann.
+    """
+    stmt = (
+        select(Recipe)
+        .join(RecipeNutrition, RecipeNutrition.recipe_id == Recipe.id)
+        .options(selectinload(Recipe.tags), selectinload(Recipe.nutrition))
+    )
+
+    if min_protein_g is not None:
+        stmt = stmt.where(RecipeNutrition.protein_g >= min_protein_g)
+    if max_calories_kcal is not None:
+        stmt = stmt.where(RecipeNutrition.calories_kcal <= max_calories_kcal)
+    if min_calories_kcal is not None:
+        stmt = stmt.where(RecipeNutrition.calories_kcal >= min_calories_kcal)
+    if max_carbs_g is not None:
+        stmt = stmt.where(RecipeNutrition.carbs_g <= max_carbs_g)
+    if max_fat_g is not None:
+        stmt = stmt.where(RecipeNutrition.fat_g <= max_fat_g)
+    if min_fiber_g is not None:
+        stmt = stmt.where(RecipeNutrition.fiber_g >= min_fiber_g)
+    if meal_type:
+        stmt = stmt.where(Recipe.meal_type == meal_type)
+
+    stmt = stmt.limit(limit)
+
+    async with get_session() as session:
+        result = await session.execute(stmt)
+        recipes = result.scalars().unique().all()
+
+    out: list[dict[str, Any]] = []
+    for r in recipes:
+        n = r.nutrition
+        summary = _summary(r)
+        summary["nutrition_per_serving"] = {
+            "calories_kcal": n.calories_kcal,
+            "protein_g": n.protein_g,
+            "carbs_g": n.carbs_g,
+            "fat_g": n.fat_g,
+            "fiber_g": n.fiber_g,
+        }
+        out.append(summary)
+    return out
+
+
 # ── Tool-Schemas (OpenAI Function-Calling-Format) ───────────────────────────────
 # Direkt als `tools=TOOL_SCHEMAS` an client.chat.completions.create() übergebbar.
 
@@ -242,6 +396,90 @@ TOOL_SCHEMAS: list[dict[str, Any]] = [
             },
         },
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "find_recipes_by_ingredients",
+            "description": (
+                "Findet Rezepte, die möglichst viele der vorhandenen Zutaten "
+                "verwenden ('Was kann ich mit dem kochen, was ich da habe?'). "
+                "Sortiert nach Trefferquote und nennt pro Rezept die fehlenden "
+                "Zutaten. Für das vollständige Rezept danach get_recipe_details "
+                "mit der zurückgegebenen id aufrufen."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "ingredients": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "Vorhandene Zutaten, z.B. ['Eier', 'Spinat', 'Feta'].",
+                    },
+                    "meal_type": {
+                        "type": "string",
+                        "enum": _MEAL_TYPES,
+                        "description": "Optional: Art der Mahlzeit eingrenzen.",
+                    },
+                    "limit": {
+                        "type": "integer",
+                        "description": "Maximale Anzahl Treffer (default 10).",
+                    },
+                },
+                "required": ["ingredients"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "filter_by_nutrition",
+            "description": (
+                "Sucht Rezepte nach Nährwert-Grenzen pro Portion (Kalorien und "
+                "Makronährstoffe), z.B. 'proteinreich und kalorienarm'. Grenzwerte "
+                "sind inklusiv. Gibt eine kompakte Trefferliste inkl. Nährwerten "
+                "zurück; für das vollständige Rezept danach get_recipe_details aufrufen."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "min_protein_g": {
+                        "type": "number",
+                        "description": "Mindest-Protein pro Portion in Gramm.",
+                    },
+                    "max_calories_kcal": {
+                        "type": "number",
+                        "description": "Maximale Kalorien pro Portion (kcal).",
+                    },
+                    "min_calories_kcal": {
+                        "type": "number",
+                        "description": "Minimale Kalorien pro Portion (kcal).",
+                    },
+                    "max_carbs_g": {
+                        "type": "number",
+                        "description": "Maximale Kohlenhydrate pro Portion in Gramm.",
+                    },
+                    "max_fat_g": {
+                        "type": "number",
+                        "description": "Maximales Fett pro Portion in Gramm.",
+                    },
+                    "min_fiber_g": {
+                        "type": "number",
+                        "description": "Mindest-Ballaststoffe pro Portion in Gramm.",
+                    },
+                    "meal_type": {
+                        "type": "string",
+                        "enum": _MEAL_TYPES,
+                        "description": "Optional: Art der Mahlzeit eingrenzen.",
+                    },
+                    "limit": {
+                        "type": "integer",
+                        "description": "Maximale Anzahl Treffer (default 10).",
+                    },
+                },
+                "required": [],
+            },
+        },
+    },
 ]
 
 
@@ -250,6 +488,8 @@ TOOL_SCHEMAS: list[dict[str, Any]] = [
 _TOOL_FUNCTIONS = {
     "search_recipes": search_recipes,
     "get_recipe_details": get_recipe_details,
+    "find_recipes_by_ingredients": find_recipes_by_ingredients,
+    "filter_by_nutrition": filter_by_nutrition,
 }
 
 
