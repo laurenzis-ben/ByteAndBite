@@ -5,6 +5,8 @@ import re
 
 from sqlalchemy import select
 
+from pathlib import Path
+
 from db.models import (
     Ingredient,
     Recipe,
@@ -147,3 +149,59 @@ async def save_recipes_to_db(recipes: list[ProcessedRecipe]) -> int:
         except Exception as exc:
             print(f"[db] Fehler beim Speichern von '{recipe.name}': {exc}")
     return saved
+
+
+if __name__ == "__main__":
+    import asyncio
+    import json
+    from pydantic import TypeAdapter
+
+    # Importiere deine Session-Funktionen (Pfade ggf. anpassen)
+    from db.session import init_engine, create_tables
+
+
+    async def run_import():
+        print("Initialisiere Datenbank...")
+        init_engine()
+        await create_tables()
+
+        # 1. Den Ordner definieren, in dem die einzelnen Rezept-JSONs liegen
+        # WICHTIG: Passe den Pfad an, falls er bei dir anders heißt!
+        recipes_dir = Path("output/recipes")
+        print(f"Suche nach Rezepten in {recipes_dir}...")
+
+        recipes_list = []
+
+        # 2. Durch alle .json Dateien im Ordner iterieren
+        for file_path in recipes_dir.glob("*.json"):
+            # Falls die manifest.json im selben Ordner liegt, ignorieren wir sie
+            if file_path.name == "manifest.json":
+                continue
+
+            try:
+                # Datei öffnen und JSON lesen
+                with open(file_path, "r", encoding="utf-8") as f:
+                    raw_data = json.load(f)
+
+                # Das rohe Dictionary in dein Pydantic-Modell umwandeln
+                # (model_validate ist der Standardweg in Pydantic V2 für einzelne Objekte)
+                recipe = ProcessedRecipe.model_validate(raw_data)
+                recipes_list.append(recipe)
+
+            except RuntimeError as e:
+                print(f"Validierungsfehler in {file_path.name} - Datei wird übersprungen.")
+            except Exception as e:
+                print(f"Allgemeiner Fehler bei {file_path.name}: {e}")
+
+        # 3. Den Speichervorgang in die Datenbank starten
+        print(f"\n{len(recipes_list)} gültige Rezepte gefunden. Starte DB-Import...")
+
+        if recipes_list:
+            saved_count = await save_recipes_to_db(recipes_list)
+            print(f"Erfolgreich abgeschlossen! {saved_count} neue Rezepte wurden gespeichert.")
+        else:
+            print("Keine gültigen Rezepte gefunden. Import abgebrochen.")
+
+
+    # Startet die asynchrone Funktion
+    asyncio.run(run_import())
