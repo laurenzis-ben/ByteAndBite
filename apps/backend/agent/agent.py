@@ -2,16 +2,16 @@
     Experimenting with the designed tools for agent workflows.
 """
 from agent.tools import search_recipes, get_recipe_details, search_discounts, get_discount_details
-from agent.utils import load_config_openai, load_config_gemini
+from agent.utils import load_config_openai
 import asyncio
-from autogen_agentchat.agents import AssistantAgent, CodeExecutorAgent
+from autogen_agentchat.agents import AssistantAgent
 from autogen_ext.models.openai import OpenAIChatCompletionClient
 from autogen_core.models import ModelInfo
 from autogen_agentchat.teams import SelectorGroupChat
 from autogen_agentchat.conditions import MaxMessageTermination, TextMentionTermination
 from autogen_agentchat.ui import Console
 
-from db.session import init_engine, create_tables
+from db.session import init_engine
 
 def agent_setup():
     config = load_config_openai()
@@ -30,7 +30,7 @@ def agent_setup():
         "PlanningAgent",
         description= """ Orchestrator Agent, der den Verlauf des Group-Chats durch die Auswahl der Agenten bestimmt.""",
         model_client=model_client,
-        system_message=f""" 
+        system_message=""" 
             Du bist mit der Planung beauftragt, den gegebenen Prompt zu erfüllen. Dafür sollst Du als selector 
             auswählen, welche Agenten in welcher Reihenfolge aufgerufen werden sollen um ihre jeweiligen Subaufgaben 
             zu erfüllen. Orientiere dich dabei an den Descriptions der einzelnen Agenten. Deine Sub-Agenten haben
@@ -74,7 +74,7 @@ def agent_setup():
 
     # 2. Analyst:
     inspector = AssistantAgent(
-        "analyst",
+        "inspector",
         model_client=model_client,
         description="""Inspiziert, ob benötigte Zutaten im Angebot sind. Sollten Ersatzprodukte für Zutaten im Angebot sein,
                     werden diese ebenfalls ausgegeben.""",
