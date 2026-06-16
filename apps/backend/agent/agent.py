@@ -89,6 +89,8 @@ def agent_setup():
                     zu erhalten.
                 - "search_discounts":
                     erlaubt dir die Menge von benötigten Zutaten mit der Angebotsliste abzugleichen.
+                - "get_discount_details":
+                    erlaubt dir für eine übergebene Zutat die Details des Angebots aus der Datenbank abzufragen.
                 Solltest Du keine Angebote oder Verbesserungen finden, antworte ausschließlich mit [APPROVED].
                 Solltest Du hingegen Zutaten ersetzt habe, durch welche die im Angebot sind, dann antworte 
                 ausschließlich mit [SUGGESTED].
