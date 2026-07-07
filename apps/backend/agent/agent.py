@@ -1,12 +1,15 @@
 """
     Experimenting with the designed tools for agent workflows.
 """
+from typing import Sequence
+
 from agent.tools import search_recipes, get_recipe_details, search_discounts, get_discount_details
 from agent.utils import load_config_openai
 import asyncio
 from autogen_agentchat.agents import AssistantAgent
 from autogen_ext.models.openai import OpenAIChatCompletionClient
 from autogen_core.models import ModelInfo
+from autogen_agentchat.messages import BaseAgentEvent, BaseChatMessage
 from autogen_agentchat.teams import SelectorGroupChat
 from autogen_agentchat.conditions import MaxMessageTermination, TextMentionTermination
 from autogen_agentchat.ui import Console
@@ -20,7 +23,7 @@ def agent_setup():
 
     model_client = OpenAIChatCompletionClient(
         model="gpt-4o-mini",
-        #model="deepseek-chat",
+        #model="deepseek-chat", WAS IST DAS HIER LUKAS?
         api_key=api_key,
         model_info=ModelInfo(vision=True, function_calling=True, json_output=True, family="unknown",
                              structured_output=True)
@@ -101,26 +104,84 @@ def agent_setup():
     writer = AssistantAgent(
         "writer",
         model_client=model_client,
-        description="Generiert eine übersichtliche Konsolen Ausgabe mit den ausgewähltn Rezepten und zugehörigen Zutaten.",
+        description="Generiert eine übersichtliche Konsolen Ausgabe mit den ausgewählten Rezepten und zugehörigen Zutaten.",
         system_message="""
                 Du sollst eine übersichtliche Konsolenausgabe generieren, sodass alle ausgewählten Rezepte und ihre 
                 benötigten Zutaten aufgelistet sind. Sollten davon Zutaten im Angebot sein oder durch Zutaten erstetzt 
-                worden sein, schreibe dies hinter die Zutat mit dem anfallenden Rabatt. Übergebe deine Konsolenausgabe
+                worden sein, schreibe dies hinter die Zutat mit dem anfallenden Rabatt. Verwende nur Rabattwerte, die der Inspector durch get_discount_details explizit zurückbekommen hat. Wenn kein exakter Wert im Kontext ist, notiere auch kein Rabatt. Verwende das folgende Format: Zutat (im Angebot: Preis in Euro --- Rabatt in Prozent).
+                Übergebe deine Konsolenausgabe
                 den Planungsagenten und antworte erneut ausschließlich mit [GENERATED].
                 """
     )
 
     planner_termination = TextMentionTermination("[TERMINATE]")
     # Define max. messages
-    max_msg_termination = MaxMessageTermination(max_messages=20)
+    max_msg_termination = MaxMessageTermination(max_messages=10)
 
     combined_termination =  planner_termination | max_msg_termination
+
+    selector_prompt = """Du wählst die nächste sprechende Rolle in einem Multi-Agenten-Workflow aus.
+                        Verfügbare Rollen:
+                        {roles}
+
+                        Bisheriger Verlauf:
+                        {history}
+
+                        Befolge strikt das Schlagwort-Protokoll von PlanningAgent:
+                        - Hat die letzte Nachricht von PlanningAgent den Namen eines Agenten genannt (z.B. "cook", "inspector", "writer"),
+                        dann wähle GENAU diesen Agenten als nächstes.
+                        - Hat "cook" mit [REZEPTE] geantwortet, ist als nächstes "PlanningAgent" oder "inspector" an der Reihe.
+                        - Hat "inspector" mit [APPROVED] oder [SUGGESTED] geantwortet, ist als nächstes "PlanningAgent" an der Reihe.
+                        - Hat "writer" mit [GENERATED] geantwortet, ist als nächstes "PlanningAgent" an der Reihe.
+                        - Sonst: wähle "PlanningAgent", damit dieser die Orchestrierung fortsetzt.
+                        Wähle ausschließlich aus {participants}. Antworte ausschließlich mit dem Namen der gewählten Rolle.
+                    """
+
+    def selector_func(messages: Sequence[BaseAgentEvent | BaseChatMessage]) -> str | None:
+        """Erzwingt das Schlagwort-Protokoll , statt es dem LLM-Selector
+        zu überlassen (der reine selector_prompt-Ansatz hat sich als unzuverlässig
+        erwiesen weil PlanningAgent hat sich wiederholt
+        selbst ausgewählt statt 'cook' weiterzugeben).
+        """
+        last = messages[-1]
+        text = last.to_text()
+
+        if last.source == "cook":
+            # Leere/keine [REZEPTE]-Antwort -> cook bekommt direkt die Chance zum Retry
+            # mit angepassten Argumenten (er sieht seinen eigenen Fehlversuch im Verlauf).
+            return "PlanningAgent" if "[REZEPTE]" in text else "cook"
+
+        if last.source == "inspector":
+            if "[APPROVED]" in text or "[SUGGESTED]" in text:
+                return "PlanningAgent"
+
+        if last.source == "writer":
+            if "[GENERATED]" in text:
+                return "PlanningAgent"
+
+        if last.source == "PlanningAgent":
+            lowered = text.lower()
+            # Letztes Vorkommen gewinnt: PlanningAgent erwähnt beim Übergeben meist
+            # sowohl den gerade fertigen als auch den nächsten Agenten im Fließtext
+            # (z.B. "Der cook hat ... Nun soll der inspector prüfen."). Der zuletzt
+            # genannte Name ist praktisch immer der tatsächlich gemeinte nächste Sprecher.
+            positions = {
+                name: idx
+                for name in ("cook", "inspector", "writer")
+                if (idx := lowered.rfind(name)) != -1
+            }
+            if positions:
+                return max(positions, key=positions.get)
+
+        # Kein eindeutiger Fall -> Fallback auf den LLM-basierten selector_prompt.
+        return None
 
     team = SelectorGroupChat(
         [planning_agent, cook, inspector, writer],
         model_client=model_client,
         termination_condition=combined_termination,
-        # selector_prompt=selector_prompt,
+        selector_prompt=selector_prompt,
+        selector_func=selector_func,
         allow_repeated_speaker=True,
     )
     return team
